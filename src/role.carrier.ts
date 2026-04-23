@@ -41,7 +41,7 @@ export const roleCarrier = {
 
     const targets = creep.room.find(FIND_STRUCTURES, {
       filter: (structure: AnyStructure) =>
-        (structure.structureType === STRUCTURE_SPAWN ||
+        (structure.structureType === STRUCTURE_TOWER || structure.structureType === STRUCTURE_SPAWN ||
           structure.structureType === STRUCTURE_EXTENSION) &&
         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
     });

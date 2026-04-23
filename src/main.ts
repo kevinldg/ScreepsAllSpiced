@@ -4,6 +4,8 @@ import { roleHarvester } from "./role.harvester";
 import { roleRepairer } from "./role.repairer";
 import { roleUpgrader } from "./role.upgrader";
 import { roleCarrier } from "./role.carrier";
+import { structureTower } from "./structure.tower";
+import { roleContainerCarer } from "./role.containerCarer";
 
 declare global {
   interface RoomMemory {
@@ -32,10 +34,11 @@ export const loop = () => {
 
   const CREEP_CONFIG = [
     { role: "harvester", limit: 2, body: [WORK, WORK, WORK, WORK, CARRY, MOVE] },
-    { role: "carrier", limit: 3, body: [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE] },
-    { role: "upgrader", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
-    { role: "repairer", limit: 2, body: [WORK, CARRY, CARRY, MOVE, MOVE] },
-    { role: "builder", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE] }
+    { role: "carrier", limit: 2, body: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE] },
+    { role: "repairer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
+    { role: "containerCarer", limit: 1, body: [WORK, WORK, WORK, CARRY, CARRY, MOVE] },
+    { role: "upgrader", limit: 1, body: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE] },
+    { role: "builder", limit: 2, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] }
   ];
 
   for (const config of CREEP_CONFIG) {
@@ -64,13 +67,20 @@ export const loop = () => {
   const ROLES: { [key: string]: { run(creep: Creep): void } } = {
     harvester: roleHarvester,
     carrier: roleCarrier,
-    upgrader: roleUpgrader,
     repairer: roleRepairer,
+    containerCarer: roleContainerCarer,
+    upgrader: roleUpgrader,
     builder: roleBuilder
+  };
+
+  const STRUCTURES = {
+    tower: structureTower
   };
 
   for (const name in Game.creeps) {
     const creep = Game.creeps[name];
     ROLES[creep.memory.role].run(creep);
   }
+
+  STRUCTURES.tower.run();
 };
