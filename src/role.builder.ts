@@ -1,3 +1,5 @@
+import { moveToWithRoadPreference } from "./utils/movement";
+
 export const roleBuilder = {
   run(creep: Creep) {
     if (creep.memory.building && creep.store[RESOURCE_ENERGY] === 0) {
@@ -13,7 +15,8 @@ export const roleBuilder = {
 
       if (targets.length > 0) {
         if (creep.build(targets[0]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#FF8C00" } });
+          // creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#FF8C00" } });
+          moveToWithRoadPreference(creep, targets[0].pos, { stroke: "#ffaa00" });
         }
       }
       creep.say("🏗️");
@@ -21,12 +24,13 @@ export const roleBuilder = {
     }
 
     const energyTargets = creep.room.find(FIND_STRUCTURES, {
-      filter: structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+      filter: structure => structure.structureType === STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0
     });
 
     if (energyTargets.length > 0) {
       if (creep.withdraw(energyTargets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(energyTargets[0], { visualizePathStyle: { stroke: "#FF8C00" } });
+        // creep.moveTo(energyTargets[0], { visualizePathStyle: { stroke: "#FF8C00" } });
+        moveToWithRoadPreference(creep, energyTargets[0].pos, { stroke: "#ffaa00" });
       }
       creep.say("🔄");
       return;

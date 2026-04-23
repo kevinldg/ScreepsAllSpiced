@@ -1,3 +1,5 @@
+import { moveToWithRoadPreference } from "./utils/movement";
+
 export const roleCarrier = {
   run(creep: Creep) {
     if (creep.store.getUsedCapacity() === 0) {
@@ -16,7 +18,8 @@ export const roleCarrier = {
 
       if (droppedEnergy) {
         if (creep.pickup(droppedEnergy) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(droppedEnergy, { visualizePathStyle: { stroke: "#1E90FF" } });
+          // creep.moveTo(droppedEnergy, { visualizePathStyle: { stroke: "#1E90FF" } });
+          moveToWithRoadPreference(creep, droppedEnergy.pos, { stroke: "#ffaa00" });
         }
         return;
       }
@@ -30,7 +33,8 @@ export const roleCarrier = {
 
       if (container) {
         if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(container, { visualizePathStyle: { stroke: "#1E90FF" } });
+          // creep.moveTo(container, { visualizePathStyle: { stroke: "#1E90FF" } });
+          moveToWithRoadPreference(creep, container.pos, { stroke: "#ffaa00" });
         }
       }
 
@@ -42,13 +46,14 @@ export const roleCarrier = {
     const targets = creep.room.find(FIND_STRUCTURES, {
       filter: (structure: AnyStructure) =>
         (structure.structureType === STRUCTURE_SPAWN ||
-          structure.structureType === STRUCTURE_EXTENSION) &&
+          structure.structureType === STRUCTURE_EXTENSION || structure.structureType === STRUCTURE_STORAGE) &&
         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
     });
 
     if (targets.length > 0) {
       if (creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#1E90FF" } });
+        // creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#1E90FF" } });
+        moveToWithRoadPreference(creep, targets[0].pos, { stroke: "#ffaa00" });
       }
     }
   }

@@ -1,3 +1,5 @@
+import { moveToWithRoadPreference } from "./utils/movement";
+
 export const roleHarvester = {
   run(creep: Creep) {
     const sourceId = creep.memory.sourceId;
@@ -6,20 +8,15 @@ export const roleHarvester = {
     const source = Game.getObjectById(sourceId) as Source;
     if (!source) return;
 
-    let primaryContainer = source.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: structure => structure.structureType === STRUCTURE_STORAGE
-    }) as StructureStorage;
+    const primaryContainer = source.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: structure => structure.structureType === STRUCTURE_CONTAINER
+    }) as StructureContainer;
 
-    if (!primaryContainer) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      primaryContainer = source.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: structure => structure.structureType === STRUCTURE_CONTAINER
-      }) as StructureContainer;
-    }
+    if (!primaryContainer) return;
 
     if (!creep.pos.isEqualTo(primaryContainer.pos)) {
-      creep.moveTo(primaryContainer.pos, { visualizePathStyle: { stroke: "#ffaa00" } });
+      // creep.moveTo(primaryContainer.pos, { visualizePathStyle: { stroke: "#ffaa00" } });
+      moveToWithRoadPreference(creep, primaryContainer.pos, { stroke: "#ffaa00" });
       return;
     }
 
@@ -45,7 +42,8 @@ export const roleHarvester = {
     }
 
     if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-      creep.moveTo(source);
+      // creep.moveTo(source);
+      moveToWithRoadPreference(creep, source.pos, { stroke: "#ffaa00" });
       return;
     }
   }

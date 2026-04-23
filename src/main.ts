@@ -33,12 +33,12 @@ export const loop = () => {
   }
 
   const CREEP_CONFIG = [
-    { role: "harvester", limit: 2, body: [WORK, WORK, WORK, WORK, CARRY, MOVE] },
-    { role: "carrier", limit: 2, body: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE] },
+    { role: "harvester", limit: 2, body: [WORK, WORK, WORK, WORK, WORK, MOVE] },
+    { role: "carrier", limit: 3, body: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE] },
     { role: "repairer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
-    { role: "containerCarer", limit: 1, body: [WORK, WORK, WORK, CARRY, CARRY, MOVE] },
+    { role: "containerCarer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
     { role: "upgrader", limit: 1, body: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE] },
-    { role: "builder", limit: 3, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] }
+    { role: "builder", limit: 0, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] }
   ];
 
   for (const config of CREEP_CONFIG) {

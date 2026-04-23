@@ -1,3 +1,5 @@
+import { moveToWithRoadPreference } from "./utils/movement";
+
 export const roleContainerCarer = {
   run(creep: Creep) {
     if (creep.memory.repairing && creep.store[RESOURCE_ENERGY] === 0) {
@@ -10,13 +12,14 @@ export const roleContainerCarer = {
     if (creep.memory.repairing) {
       // eslint-disable-next-line @typescript-eslint/no-shadow
       const targets = creep.room.find(FIND_STRUCTURES, {
-        filter: object => object.hits < object.hitsMax && object.structureType === STRUCTURE_CONTAINER
+        filter: object => object.hits < object.hitsMax && (object.structureType === STRUCTURE_STORAGE || object.structureType === STRUCTURE_CONTAINER)
       });
       targets.sort((a, b) => a.hits - b.hits);
 
       if (targets.length > 0) {
         if (creep.repair(targets[0]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#FF8C00" } });
+          // creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#FF8C00" } });
+          moveToWithRoadPreference(creep, targets[0].pos, { stroke: "#ffaa00" });
         }
       }
       creep.say("🧰");
@@ -29,7 +32,8 @@ export const roleContainerCarer = {
 
     if (targets.length > 0) {
       if (creep.withdraw(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#FF8C00" } });
+        // creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#FF8C00" } });
+        moveToWithRoadPreference(creep, targets[0].pos, { stroke: "#ffaa00" });
       }
       creep.say("🔄");
       return;
