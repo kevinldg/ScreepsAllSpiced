@@ -6,6 +6,8 @@ import { roleUpgrader } from "./role.upgrader";
 import { roleCarrier } from "./role.carrier";
 import { structureTower } from "./structure.tower";
 import { roleContainerCarer } from "./role.containerCarer";
+import { roleCombat } from "./role.combat";
+import { roleClaim } from "./role.claim";
 
 declare global {
   interface RoomMemory {
@@ -38,7 +40,9 @@ export const loop = () => {
     { role: "repairer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
     { role: "containerCarer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
     { role: "upgrader", limit: 1, body: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE] },
-    { role: "builder", limit: 0, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] }
+    { role: "builder", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
+    { role: "combat", limit: 0, body: [RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE] },
+    { role: "claim", limit: 1, body: [CLAIM, MOVE] }
   ];
 
   for (const config of CREEP_CONFIG) {
@@ -70,7 +74,9 @@ export const loop = () => {
     repairer: roleRepairer,
     containerCarer: roleContainerCarer,
     upgrader: roleUpgrader,
-    builder: roleBuilder
+    builder: roleBuilder,
+    combat: roleCombat,
+    claim: roleClaim
   };
 
   const STRUCTURES = {
