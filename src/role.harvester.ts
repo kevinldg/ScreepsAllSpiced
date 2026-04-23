@@ -6,11 +6,17 @@ export const roleHarvester = {
     const source = Game.getObjectById(sourceId) as Source;
     if (!source) return;
 
-    const primaryContainer = source.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: structure => structure.structureType === STRUCTURE_CONTAINER
-    }) as StructureContainer;
+    let primaryContainer = source.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: structure => structure.structureType === STRUCTURE_STORAGE
+    }) as StructureStorage;
 
-    if (!primaryContainer) return;
+    if (!primaryContainer) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      primaryContainer = source.pos.findClosestByRange(FIND_STRUCTURES, {
+        filter: structure => structure.structureType === STRUCTURE_CONTAINER
+      }) as StructureContainer;
+    }
 
     if (!creep.pos.isEqualTo(primaryContainer.pos)) {
       creep.moveTo(primaryContainer.pos, { visualizePathStyle: { stroke: "#ffaa00" } });

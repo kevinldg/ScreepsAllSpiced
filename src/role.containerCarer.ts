@@ -24,7 +24,7 @@ export const roleContainerCarer = {
     }
 
     const targets = creep.room.find(FIND_STRUCTURES, {
-      filter: structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0
+      filter: structure => (structure.structureType === STRUCTURE_CONTAINER || structure.structureType === STRUCTURE_STORAGE) && structure.store[RESOURCE_ENERGY] > 0
     });
 
     if (targets.length > 0) {
