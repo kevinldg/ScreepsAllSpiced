@@ -36,14 +36,20 @@ export const roleCarrierStorage = {
 
     creep.say("🚚");
 
+    const tower = creep.room.find(FIND_STRUCTURES, {
+      filter: (s: StructureTower) => s.structureType === STRUCTURE_TOWER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+    });
+
     const storage = creep.room.find(FIND_STRUCTURES, {
       filter: (s: StructureStorage) =>
         s.structureType === STRUCTURE_STORAGE && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-    })[0];
+    });
 
-    if (storage) {
-      if (creep.transfer(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        moveToWithRoadPreference(creep, storage.pos, { stroke: "#ffaa00" });
+    const target = tower[0] || storage[0];
+
+    if (target) {
+      if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        moveToWithRoadPreference(creep, target.pos, { stroke: "#ffaa00" });
       }
     }
   }
