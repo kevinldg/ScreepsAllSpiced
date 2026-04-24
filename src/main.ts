@@ -34,19 +34,19 @@ declare global {
 const ROOM_CONFIG: { [roomName: string]: { role: string; limit: number; body: BodyPartConstant[] }[] } = {
   W5N8: [
     { role: "harvester", limit: 2, body: [WORK, WORK, WORK, WORK, CARRY, MOVE] },
-    { role: "carrierSpawn", limit: 2, body: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE] },
-    { role: "carrierStorage", limit: 4, body: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE] },
+    { role: "carrierSpawn", limit: 2, body: [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE] },
+    { role: "carrierStorage", limit: 2, body: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE] },
     { role: "repairer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
     { role: "containerCarer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
-    { role: "upgrader", limit: 1, body: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE] },
-    { role: "builder", limit: 2, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
-    { role: "combat", limit: 1, body: [RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE] },
+    { role: "upgrader", limit: 4, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
+    { role: "builder", limit: 0, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
+    { role: "combat", limit:1, body: [RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE] },
     { role: "claim", limit: 0, body: [CLAIM, MOVE] }
   ],
   W4N8: [
-    { role: "minimalUpgrader", limit: 1, body: [WORK, CARRY, MOVE] },
-    { role: "minimalHarvester", limit: 1, body: [WORK, CARRY, MOVE] },
-    { role: "minimalBuilder", limit: 3, body: [WORK, CARRY, MOVE] }
+    { role: "minimalUpgrader", limit: 3, body: [WORK, CARRY, MOVE] },
+    { role: "minimalHarvester", limit: 3, body: [WORK, CARRY, MOVE] },
+    { role: "minimalBuilder", limit: 1, body: [WORK, CARRY, MOVE] }
   ]
 };
 
