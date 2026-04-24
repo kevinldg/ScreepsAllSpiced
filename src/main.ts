@@ -1,20 +1,25 @@
 import _ from "lodash";
 import { roleBuilder } from "./role.builder";
+import { roleCarrierSpawn } from "./roleCarrierSpawn";
+import { roleCarrierStorage } from "./role.carrierStorage";
+import { roleClaim } from "./role.claim";
+import { roleCombat } from "./role.combat";
+import { roleContainerCarer } from "./role.containerCarer";
 import { roleHarvester } from "./role.harvester";
+import { roleMinimalUpgrader } from "./role.minimalUpgrader";
 import { roleRepairer } from "./role.repairer";
 import { roleUpgrader } from "./role.upgrader";
-import { roleCarrier } from "./role.carrier";
-import { structureTower } from "./structure.tower";
-import { roleContainerCarer } from "./role.containerCarer";
-import { roleCombat } from "./role.combat";
-import { roleClaim } from "./role.claim";
+import { roleMinimalHarvester } from "./role.minimalHarvester";
+import { roleMinimalBuilder } from "./role.minimalBuilder";
 
 declare global {
   interface RoomMemory {
     [name: string]: any;
+    stage: "BUILD_SPAWN" | "SPAWNING_ECONOMY" | "ONLINE";
   }
   interface CreepMemory {
     role: string;
+    roomName: string;
     sourceId: string | undefined;
     [name: string]: any;
   }
@@ -26,6 +31,24 @@ declare global {
   }
 }
 
+const ROOM_CONFIG: { [roomName: string]: { role: string; limit: number; body: BodyPartConstant[] }[] } = {
+  W5N8: [
+    { role: "harvester", limit: 2, body: [WORK, WORK, WORK, WORK, WORK, MOVE] },
+    { role: "carrierSpawn", limit: 2, body: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE] },
+    { role: "carrierStorage", limit: 1, body: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE] },
+    { role: "repairer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
+    { role: "containerCarer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
+    { role: "upgrader", limit: 1, body: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE] },
+    { role: "builder", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
+    { role: "combat", limit: 1, body: [RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE] },
+    { role: "claim", limit: 0, body: [CLAIM, MOVE] }
+  ],
+  W4N8: [
+    { role: "minimalUpgrader", limit: 4, body: [WORK, CARRY, MOVE] },
+    { role: "minimalHarvester", limit: 4, body: [WORK, CARRY, MOVE] }
+  ]
+};
+
 export const loop = () => {
   for (const name in Memory.creeps) {
     if (!Game.creeps[name]) {
@@ -34,59 +57,76 @@ export const loop = () => {
     }
   }
 
-  const CREEP_CONFIG = [
-    { role: "harvester", limit: 2, body: [WORK, WORK, WORK, WORK, WORK, MOVE] },
-    { role: "carrier", limit: 3, body: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE] },
-    { role: "repairer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
-    { role: "containerCarer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
-    { role: "upgrader", limit: 1, body: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE] },
-    { role: "builder", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
-    { role: "combat", limit: 0, body: [RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE] },
-    { role: "claim", limit: 1, body: [CLAIM, MOVE] }
-  ];
+  for (const roomName in Game.rooms) {
+    const room = Game.rooms[roomName];
 
-  for (const config of CREEP_CONFIG) {
-    const creeps = _.filter(Game.creeps, creep => creep.memory.role === config.role);
-    const spawn = Game.spawns.Spawn1;
+    if (!room.controller?.my) continue;
 
-    if (creeps.length < config.limit) {
-      const name = `${config.role.charAt(0).toUpperCase()}${config.role.slice(1)}${Game.time}`;
-      if (spawn) {
+    const config = ROOM_CONFIG[roomName];
+    if (!config) {
+      console.log(`⚠️ Keine Config für Room: ${roomName}`);
+      continue;
+    }
+
+    const spawns = room.find(FIND_MY_SPAWNS);
+    if (spawns.length === 0) continue;
+    const spawn = spawns[0];
+
+    for (const roleConfig of config) {
+      const creeps = _.filter(
+        Game.creeps,
+        creep => creep.memory.role === roleConfig.role && creep.memory.roomName === roomName
+      );
+
+      if (creeps.length < roleConfig.limit) {
+        const name = `${roomName}_${roleConfig.role.charAt(0).toUpperCase()}${roleConfig.role.slice(1)}_${Game.time}`;
+
         let sourceId: string | undefined;
-        if (config.role === "harvester") {
-          const sources = spawn.room.find(FIND_SOURCES);
-          const assignedHarvesters = _.filter(Game.creeps, creep => creep.memory.role === "harvester");
-
+        if (roleConfig.role === "harvester") {
+          const sources = room.find(FIND_SOURCES);
           sourceId = sources.find(source => {
-            const count = _.filter(assignedHarvesters, creep => creep.memory.sourceId === source.id).length;
+            const count = _.filter(
+              Game.creeps,
+              creep => creep.memory.sourceId === source.id && creep.memory.roomName === roomName
+            ).length;
             return count === 0;
           })?.id;
         }
 
-        spawn.spawnCreep(config.body, name, { memory: { role: config.role, sourceId } });
+        spawn.spawnCreep(roleConfig.body, name, {
+          memory: {
+            role: roleConfig.role,
+            roomName,
+            sourceId
+          }
+        });
       }
     }
   }
 
   const ROLES: { [key: string]: { run(creep: Creep): void } } = {
     harvester: roleHarvester,
-    carrier: roleCarrier,
+    minimalHarvester: roleMinimalHarvester,
+    carrierSpawn: roleCarrierSpawn,
+    carrierStorage: roleCarrierStorage,
     repairer: roleRepairer,
     containerCarer: roleContainerCarer,
     upgrader: roleUpgrader,
+    minimalUpgrader: roleMinimalUpgrader,
     builder: roleBuilder,
+    minimalBuilder: roleMinimalBuilder,
     combat: roleCombat,
     claim: roleClaim
   };
 
-  const STRUCTURES = {
-    tower: structureTower
-  };
-
   for (const name in Game.creeps) {
     const creep = Game.creeps[name];
-    ROLES[creep.memory.role].run(creep);
-  }
+    const role = ROLES[creep.memory.role];
 
-  STRUCTURES.tower.run();
+    if (role) {
+      role.run(creep);
+    } else {
+      console.log(`⚠️ Unknown role: ${creep.memory.role} (${creep.name})`);
+    }
+  }
 };

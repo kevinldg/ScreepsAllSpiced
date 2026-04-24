@@ -1,22 +1,18 @@
-import { moveToWithRoadPreference } from "./utils/movement";
-
 export const roleClaim = {
   run(creep: Creep) {
     const flag = Game.flags.EXPAND;
     if (!flag) return;
 
-    const room = flag.room;
+    const controller = flag.pos.roomName ? Game.rooms[flag.pos.roomName]?.controller : undefined;
 
-    if (!room) {
-      moveToWithRoadPreference(creep, flag.pos, { stroke: "#00ff00" });
+    if (!controller || !Game.rooms[flag.pos.roomName]) {
+      creep.moveTo(flag, { visualizePathStyle: { stroke: "#00ff00" } });
       return;
     }
 
-    const controller = room.controller;
-    if (!controller) return;
-
     if (creep.claimController(controller) === ERR_NOT_IN_RANGE) {
-      moveToWithRoadPreference(creep, controller.pos, { stroke: "#00ff00" });
+      creep.moveTo(controller, { visualizePathStyle: { stroke: "#00ff00" } });
+      return;
     }
 
     creep.say("👑");

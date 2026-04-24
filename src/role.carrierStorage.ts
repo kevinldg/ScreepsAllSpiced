@@ -1,6 +1,6 @@
 import { moveToWithRoadPreference } from "./utils/movement";
 
-export const roleCarrier = {
+export const roleCarrierStorage = {
   run(creep: Creep) {
     if (creep.store.getUsedCapacity() === 0) {
       creep.memory.collecting = true;
@@ -21,19 +21,10 @@ export const roleCarrier = {
           s.structureType === STRUCTURE_CONTAINER && s.store.getUsedCapacity(RESOURCE_ENERGY) > 0
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-shadow
-      const storage = creep.room.find(FIND_STRUCTURES, {
-        filter: (s: StructureStorage) =>
-          s.structureType === STRUCTURE_STORAGE && s.store.getUsedCapacity(RESOURCE_ENERGY) > 0
-      });
-
-      const source = droppedEnergy[0] || container[0] || storage[0];
+      const source = droppedEnergy[0] || container[0];
 
       if (source) {
-        const result =
-          source instanceof Resource
-            ? creep.pickup(source)
-            : creep.withdraw(source, RESOURCE_ENERGY);
+        const result = source instanceof Resource ? creep.pickup(source) : creep.withdraw(source, RESOURCE_ENERGY);
 
         if (result === ERR_NOT_IN_RANGE) {
           moveToWithRoadPreference(creep, source.pos, { stroke: "#ffaa00" });
@@ -45,24 +36,14 @@ export const roleCarrier = {
 
     creep.say("🚚");
 
-    const spawn = creep.room.find(FIND_STRUCTURES, {
-      filter: (s: StructureSpawn) => s.structureType === STRUCTURE_SPAWN && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-    })[0];
-
-    const extensions = creep.room.find(FIND_STRUCTURES, {
-      filter: (s: StructureExtension) => s.structureType === STRUCTURE_EXTENSION && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-    })[0];
-
     const storage = creep.room.find(FIND_STRUCTURES, {
       filter: (s: StructureStorage) =>
         s.structureType === STRUCTURE_STORAGE && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
     })[0];
 
-    const target = spawn || extensions || storage;
-
-    if (target) {
-      if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        moveToWithRoadPreference(creep, target.pos, { stroke: "#ffaa00" });
+    if (storage) {
+      if (creep.transfer(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        moveToWithRoadPreference(creep, storage.pos, { stroke: "#ffaa00" });
       }
     }
   }
