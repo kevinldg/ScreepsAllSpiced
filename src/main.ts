@@ -12,6 +12,7 @@ import { roleUpgrader } from "./role.upgrader";
 import { roleMinimalHarvester } from "./role.minimalHarvester";
 import { roleMinimalBuilder } from "./role.minimalBuilder";
 import { structureTower } from "./structure.tower";
+import { roleWallBuilder } from "./role.wallBuilder";
 
 declare global {
   interface RoomMemory {
@@ -40,8 +41,9 @@ const ROOM_CONFIG: { [roomName: string]: { role: string; limit: number; body: Bo
     { role: "repairer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
     { role: "containerCarer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
     { role: "upgrader", limit: 2, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
-    { role: "builder", limit: 2, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
+    { role: "builder", limit: 0, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
     { role: "combat", limit:1, body: [RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE] },
+    { role: "wallBuilder", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
     { role: "claim", limit: 0, body: [CLAIM, MOVE] }
   ],
   W4N8: [
@@ -117,6 +119,7 @@ export const loop = () => {
     minimalUpgrader: roleMinimalUpgrader,
     builder: roleBuilder,
     minimalBuilder: roleMinimalBuilder,
+    wallBuilder: roleWallBuilder,
     combat: roleCombat,
     claim: roleClaim
   };

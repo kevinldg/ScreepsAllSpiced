@@ -1,6 +1,6 @@
 import { moveToWithRoadPreference } from "./utils/movement";
 
-export const roleRepairer = {
+export const roleWallBuilder = {
   run(creep: Creep) {
     if (creep.memory.repairing && creep.store[RESOURCE_ENERGY] === 0) {
       creep.memory.repairing = false;
@@ -10,16 +10,11 @@ export const roleRepairer = {
     }
 
     if (creep.memory.repairing) {
-      let targets = creep.room.find(FIND_STRUCTURES, {
-        filter: object => object.structureType === STRUCTURE_ROAD && object.hits < object.hitsMax
+      const targets = creep.room.find(FIND_STRUCTURES, {
+        filter: object =>
+          (object.structureType === STRUCTURE_WALL || object.structureType === STRUCTURE_RAMPART) &&
+          object.hits < object.hitsMax
       });
-
-      if (targets.length === 0) {
-        targets = creep.room.find(FIND_STRUCTURES, {
-          filter: object => object.hits < object.hitsMax
-        });
-      }
-
       targets.sort((a, b) => a.hits - b.hits);
 
       if (targets.length > 0) {
