@@ -38,16 +38,16 @@ const ROOM_CONFIG: { [roomName: string]: { role: string; limit: number; body: Bo
     { role: "carrierSpawn", limit: 3, body: [CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE] },
     { role: "carrierStorage", limit: 3, body: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE] },
     { role: "repairer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
-    { role: "containerCarer", limit: 0, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
-    { role: "upgrader", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
-    { role: "builder", limit: 0, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
+    { role: "containerCarer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
+    { role: "upgrader", limit: 2, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
+    { role: "builder", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
     { role: "combat", limit:1, body: [RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE] },
     { role: "claim", limit: 0, body: [CLAIM, MOVE] }
   ],
   W4N8: [
-    { role: "minimalUpgrader", limit: 4, body: [WORK, CARRY, MOVE] },
-    { role: "minimalHarvester", limit: 3, body: [WORK, CARRY, MOVE] },
-    { role: "minimalBuilder", limit: 1, body: [WORK, CARRY, MOVE] }
+    { role: "minimalUpgrader", limit: 1, body: [WORK, WORK, CARRY, MOVE] },
+    { role: "minimalHarvester", limit: 2, body: [WORK, WORK, CARRY, MOVE] },
+    { role: "minimalBuilder", limit: 2, body: [WORK, WORK, CARRY, MOVE] }
   ]
 };
 

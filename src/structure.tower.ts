@@ -5,12 +5,9 @@ export const structureTower = {
     });
 
     _.forEach(towers, function (tower: StructureTower) {
-      const closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter: structure => (structure.structureType === STRUCTURE_CONTAINER || structure.structureType === STRUCTURE_ROAD) && structure.hits < structure.hitsMax
-      });
-
-      if (closestDamagedStructure) {
-        tower.repair(closestDamagedStructure);
+      const closestEnemy = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+      if (closestEnemy) {
+        tower.attack(closestEnemy);
       }
     });
   }
