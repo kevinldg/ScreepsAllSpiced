@@ -40,10 +40,10 @@ const ROOM_CONFIG: { [roomName: string]: { role: string; limit: number; body: Bo
     { role: "carrierStorage", limit: 3, body: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE] },
     { role: "repairer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
     { role: "containerCarer", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
-    { role: "upgrader", limit: 2, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
+    { role: "upgrader", limit: 3, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
     { role: "builder", limit: 0, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
     { role: "combat", limit:1, body: [RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE] },
-    { role: "wallBuilder", limit: 1, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
+    { role: "wallBuilder", limit: 0, body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE] },
     { role: "claim", limit: 0, body: [CLAIM, MOVE] }
   ],
   W4N8: [
