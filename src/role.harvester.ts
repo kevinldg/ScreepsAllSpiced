@@ -15,7 +15,6 @@ export const roleHarvester = {
     if (!primaryContainer) return;
 
     if (!creep.pos.isEqualTo(primaryContainer.pos)) {
-      // creep.moveTo(primaryContainer.pos, { visualizePathStyle: { stroke: "#ffaa00" } });
       moveToWithRoadPreference(creep, primaryContainer.pos, { stroke: "#ffaa00" });
       return;
     }
@@ -23,16 +22,12 @@ export const roleHarvester = {
     if (creep.store.getFreeCapacity() === 0) {
       if (primaryContainer.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        const overflowContainers = primaryContainer.pos.findInRange(FIND_STRUCTURES, 1, {
+        const overflowContainer = primaryContainer.pos.findInRange(FIND_STRUCTURES, 1, {
           filter: s => s.structureType === STRUCTURE_CONTAINER && !s.pos.isEqualTo(primaryContainer.pos)
         }) as StructureContainer[];
 
-        const bestContainer = overflowContainers.sort(
-          (a, b) => b.store.getFreeCapacity(RESOURCE_ENERGY) - a.store.getFreeCapacity(RESOURCE_ENERGY)
-        )[0];
-
-        if (bestContainer) {
-          creep.transfer(bestContainer, RESOURCE_ENERGY);
+        if (overflowContainer) {
+          creep.transfer(overflowContainer[0], RESOURCE_ENERGY);
           return;
         }
       } else {
@@ -42,7 +37,6 @@ export const roleHarvester = {
     }
 
     if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-      // creep.moveTo(source);
       moveToWithRoadPreference(creep, source.pos, { stroke: "#ffaa00" });
       return;
     }
